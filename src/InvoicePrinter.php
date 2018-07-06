@@ -27,6 +27,7 @@ class InvoicePrinter extends FPDF
         'r' => 15
     ]; /* l: Left Side , t: Top Side , r: Right Side */
 
+    public $charset;
     public $lang;
     public $document;
     public $type;
@@ -62,6 +63,7 @@ class InvoicePrinter extends FPDF
         $this->setLanguage($language);
         $this->setDocumentSize($size);
         $this->setColor("#222222");
+        $this->setCharset("ISO-8859-1");
 
         parent::__construct('P', 'mm', [$this->document['w'], $this->document['h']]);
 
@@ -151,6 +153,14 @@ class InvoicePrinter extends FPDF
         }
 
         return true;
+    }
+
+    public function setCharset($charset) {
+      if (!\in_array($charset, array('ISO-8859-1', 'windows-1252'))) {
+        trigger_error("FPDF defaults font expect text encoded in ISO-8859-1 or windows-1252 only. Be sure, to follow the tutorial at http://www.fpdf.org/fr/tutorial/tuto7.htm.");
+      }
+
+      $this->charset = $charset;
     }
 
     public function setTimeZone($zone = "")
@@ -307,7 +317,7 @@ class InvoicePrinter extends FPDF
         $this->SetTextColor(0, 0, 0);
         $this->SetFont($this->font, 'B', 20);
         if(isset($this->title) and !empty($this->title)) {
-            $this->Cell(0, 5, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->title, 'UTF-8')), 0, 1, 'R');
+            $this->Cell(0, 5, iconv("UTF-8", $this->charset, mb_strtoupper($this->title, 'UTF-8')), 0, 1, 'R');
         }
         $this->SetFont($this->font, '', 9);
         $this->Ln(5);
@@ -323,7 +333,7 @@ class InvoicePrinter extends FPDF
         if (!empty($this->reference)) {
             $this->Cell($positionX, $lineheight);
             $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->Cell(32, $lineheight, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['number'], 'UTF-8') . ':'), 0, 0,
+            $this->Cell(32, $lineheight, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['number'], 'UTF-8') . ':'), 0, 0,
                 'L');
             $this->SetTextColor(50, 50, 50);
             $this->SetFont($this->font, '', 9);
@@ -333,7 +343,7 @@ class InvoicePrinter extends FPDF
         $this->Cell($positionX, $lineheight);
         $this->SetFont($this->font, 'B', 9);
         $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-        $this->Cell(32, $lineheight, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['date'], 'UTF-8')) . ':', 0, 0, 'L');
+        $this->Cell(32, $lineheight, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['date'], 'UTF-8')) . ':', 0, 0, 'L');
         $this->SetTextColor(50, 50, 50);
         $this->SetFont($this->font, '', 9);
         $this->Cell(0, $lineheight, $this->date, 0, 1, 'R');
@@ -343,7 +353,7 @@ class InvoicePrinter extends FPDF
             $this->Cell($positionX, $lineheight);
             $this->SetFont($this->font, 'B', 9);
             $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->Cell(32, $lineheight, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['time'], 'UTF-8')) . ':', 0, 0,
+            $this->Cell(32, $lineheight, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['time'], 'UTF-8')) . ':', 0, 0,
                 'L');
             $this->SetTextColor(50, 50, 50);
             $this->SetFont($this->font, '', 9);
@@ -354,7 +364,7 @@ class InvoicePrinter extends FPDF
             $this->Cell($positionX, $lineheight);
             $this->SetFont($this->font, 'B', 9);
             $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->Cell(32, $lineheight, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['due'], 'UTF-8')) . ':', 0, 0, 'L');
+            $this->Cell(32, $lineheight, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['due'], 'UTF-8')) . ':', 0, 0, 'L');
             $this->SetTextColor(50, 50, 50);
             $this->SetFont($this->font, '', 9);
             $this->Cell(0, $lineheight, $this->due, 0, 1, 'R');
@@ -386,8 +396,8 @@ class InvoicePrinter extends FPDF
             }
 
             if ($this->display_tofrom === true) {
-                $this->Cell($width, $lineheight, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['from'], 'UTF-8')), 0, 0, 'L');
-                $this->Cell(0, $lineheight, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['to'], 'UTF-8')), 0, 0, 'L');
+                $this->Cell($width, $lineheight, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['from'], 'UTF-8')), 0, 0, 'L');
+                $this->Cell(0, $lineheight, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['to'], 'UTF-8')), 0, 0, 'L');
                 $this->Ln(7);
                 $this->SetLineWidth(0.4);
                 $this->Line($this->margins['l'], $this->GetY(), $this->margins['l'] + $width - 10, $this->GetY());
@@ -404,8 +414,8 @@ class InvoicePrinter extends FPDF
                 $this->SetTextColor(100, 100, 100);
                 $this->Ln(7);
                 for ($i = 1; $i < max(count($this->from), count($this->to)); $i++) {
-                    $this->Cell($width, $lineheight, iconv("UTF-8", "ISO-8859-1", $this->from[$i]), 0, 0, 'L');
-                    $this->Cell(0, $lineheight, iconv("UTF-8", "ISO-8859-1", $this->to[$i]), 0, 0, 'L');
+                    $this->Cell($width, $lineheight, iconv("UTF-8", $this->charset, $this->from[$i]), 0, 0, 'L');
+                    $this->Cell(0, $lineheight, iconv("UTF-8", $this->charset, $this->to[$i]), 0, 0, 'L');
                     $this->Ln(5);
                 }
                 $this->Ln(-6);
@@ -421,24 +431,24 @@ class InvoicePrinter extends FPDF
             $this->Ln(12);
             $this->SetFont($this->font, 'B', 9);
             $this->Cell(1, 10, '', 0, 0, 'L', 0);
-            $this->Cell($this->firstColumnWidth, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['product'], 'UTF-8')),
+            $this->Cell($this->firstColumnWidth, 10, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['product'], 'UTF-8')),
                 0, 0, 'L', 0);
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-            $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['qty'], 'UTF-8')), 0, 0, 'C', 0);
+            $this->Cell($width_other, 10, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['qty'], 'UTF-8')), 0, 0, 'C', 0);
             if (isset($this->vatField)) {
                 $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-                $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['vat'], 'UTF-8')), 0, 0, 'C',
+                $this->Cell($width_other, 10, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['vat'], 'UTF-8')), 0, 0, 'C',
                     0);
             }
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-            $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['price'], 'UTF-8')), 0, 0, 'C', 0);
+            $this->Cell($width_other, 10, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['price'], 'UTF-8')), 0, 0, 'C', 0);
             if (isset($this->discountField)) {
                 $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-                $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['discount'], 'UTF-8')), 0, 0,
+                $this->Cell($width_other, 10, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['discount'], 'UTF-8')), 0, 0,
                     'C', 0);
             }
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-            $this->Cell($width_other, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($this->lang['total'], 'UTF-8')), 0, 0, 'C', 0);
+            $this->Cell($width_other, 10, iconv("UTF-8", $this->charset, mb_strtoupper($this->lang['total'], 'UTF-8')), 0, 0, 'C', 0);
             $this->Ln();
             $this->SetLineWidth(0.3);
             $this->SetDrawColor($this->color[0], $this->color[1], $this->color[2]);
@@ -463,7 +473,7 @@ class InvoicePrinter extends FPDF
                     $calculateHeight->setXY(0, 0);
                     $calculateHeight->SetFont($this->font, '', 7);
                     $calculateHeight->MultiCell($this->firstColumnWidth, 3,
-                        iconv("UTF-8", "ISO-8859-1", $item['description']), 0, 'L', 1);
+                        iconv("UTF-8", $this->charset, $item['description']), 0, 'L', 1);
                     $descriptionHeight = $calculateHeight->getY() + $cellHeight + 2;
                     $pageHeight        = $this->document['h'] - $this->GetY() - $this->margins['t'] - $this->margins['t'];
                     if ($pageHeight < 35) {
@@ -476,7 +486,7 @@ class InvoicePrinter extends FPDF
                 $this->SetFillColor($bgcolor, $bgcolor, $bgcolor);
                 $this->Cell(1, $cHeight, '', 0, 0, 'L', 1);
                 $x = $this->GetX();
-                $this->Cell($this->firstColumnWidth, $cHeight, iconv("UTF-8", "ISO-8859-1", $item['item']), 0, 0, 'L',
+                $this->Cell($this->firstColumnWidth, $cHeight, iconv("UTF-8", $this->charset, $item['item']), 0, 0, 'L',
                     1);
                 if ($item['description']) {
                     $resetX = $this->GetX();
@@ -484,7 +494,7 @@ class InvoicePrinter extends FPDF
                     $this->SetTextColor(120, 120, 120);
                     $this->SetXY($x, $this->GetY() + 8);
                     $this->SetFont($this->font, '', 7);
-                    $this->MultiCell($this->firstColumnWidth, 3, iconv("UTF-8", "ISO-8859-1", $item['description']), 0,
+                    $this->MultiCell($this->firstColumnWidth, 3, iconv("UTF-8", $this->charset, $item['description']), 0,
                         'L', 1);
                     //Calculate Height
                     $newY    = $this->GetY();
@@ -597,7 +607,7 @@ class InvoicePrinter extends FPDF
             if ($text[0] == 'title') {
                 $this->SetFont($this->font, 'b', 9);
                 $this->SetTextColor(50, 50, 50);
-                $this->Cell(0, 10, iconv("UTF-8", "ISO-8859-1", mb_strtoupper($text[1], 'UTF-8')), 0, 0, 'L', 0);
+                $this->Cell(0, 10, iconv("UTF-8", $this->charset, mb_strtoupper($text[1], 'UTF-8')), 0, 0, 'L', 0);
                 $this->Ln();
                 $this->SetLineWidth(0.3);
                 $this->SetDrawColor($this->color[0], $this->color[1], $this->color[2]);
@@ -608,7 +618,7 @@ class InvoicePrinter extends FPDF
             if ($text[0] == 'paragraph') {
                 $this->SetTextColor(80, 80, 80);
                 $this->SetFont($this->font, '', 8);
-                $this->MultiCell(0, 4, iconv("UTF-8", "ISO-8859-1", $text[1]), 0, 'L', 0);
+                $this->MultiCell(0, 4, iconv("UTF-8", $this->charset, $text[1]), 0, 'L', 0);
                 $this->Ln(4);
             }
         }
@@ -619,7 +629,7 @@ class InvoicePrinter extends FPDF
         $this->SetY(-$this->margins['t']);
         $this->SetFont($this->font, '', 8);
         $this->SetTextColor(50, 50, 50);
-        $this->Cell(0, 10, $this->footernote, 0, 0, 'L');
+        $this->Cell(0, 10, iconv("UTF-8", $this->charset,  $this->footernote), 0, 0, 'L');
         $this->Cell(0, 10, $this->lang['page'] . ' ' . $this->PageNo() . ' ' . $this->lang['page_of'] . ' {nb}', 0, 0,
             'R');
     }
