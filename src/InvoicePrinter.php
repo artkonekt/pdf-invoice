@@ -275,10 +275,10 @@ class InvoicePrinter extends FPDF
         $this->addText[] = ['title', $title];
     }
 
-    public function addParagraph($paragraph)
+    public function addParagraph($paragraph, $orientation = 'L')
     {
         $paragraph       = $this->br2nl($paragraph);
-        $this->addText[] = ['paragraph', $paragraph];
+        $this->addText[] = ['paragraph', $paragraph, $orientation];
     }
 
     public function addBadge($badge, $color = false)
@@ -617,7 +617,7 @@ class InvoicePrinter extends FPDF
             if ($text[0] == 'paragraph') {
                 $this->SetTextColor(80, 80, 80);
                 $this->SetFont($this->font, '', 8);
-                $this->MultiCell(0, 4, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, $text[1]), 0, 'L', 0);
+                $this->MultiCell(0, 4, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, $text[1]), 0, $text[2], 0);
                 $this->Ln(4);
             }
         }
