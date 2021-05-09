@@ -1,6 +1,8 @@
 <?php
 
-include '../InvoicePrinter.php';
+use Konekt\PdfInvoice\InvoicePrinter;
+
+include '../src/InvoicePrinter.php';
 $invoice = new InvoicePrinter();
   /* Header Settings */
   $invoice->setTimeZone('America/Los_Angeles');
