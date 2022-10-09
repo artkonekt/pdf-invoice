@@ -72,6 +72,13 @@ class InvoicePrinter extends FPDF
     public $display_tofrom = true;
     public $customHeaders = [];
     protected $displayToFromHeaders = true;
+    protected $displayNewPageShowHeader = true;
+    protected $addPageQuoteSignature = false;
+    protected $addPageQuoteSignaturePageText1 = '';
+    protected $addPageTerms = false;
+    protected $addPageTermsColumns = 1;
+    protected $addPageTermsText1 = '';
+    protected $addPageTermsText2 = '';
     protected $columns = 1;
 
     public function __construct($size = self::INVOICE_SIZE_A4, $currency = '$', $language = 'en')
@@ -273,6 +280,36 @@ class InvoicePrinter extends FPDF
     {
         $this->totalsAlignment = $alignment;
     }
+    
+    public function setAddPageQuoteSignature($data)
+    {
+        $this->addPageQuoteSignature = $data;
+    }
+    
+    public function setAddPageQuoteSignaturePageText1($data)
+    {
+        $this->addPageQuoteSignaturePageText1 = $data;
+    }
+
+    public function setAddTermsPage($data)
+    {
+        $this->addPageTerms = $data;
+    }
+
+    public function setAddTermsPageColumns($data)
+    {
+        $this->addPageTermsColumns = $data;
+    }
+
+    public function setAddTermsPageText1($data)
+    {
+        $this->addPageTermsText1 = $data;
+    }
+
+    public function setAddTermsPageText2($data)
+    {
+        $this->addPageTermsText2 = $data;
+    }
 
     public function flipflop()
     {
@@ -424,12 +461,23 @@ class InvoicePrinter extends FPDF
         $this->AddPage();
         $this->Body();
         $this->AliasNbPages();
+		if($this->addPageQuoteSignature === true){
+            $this->displayNewPageShowHeader = true;
+            $this->AddPage();
+			$this->quoteSignature();
+		}
+        if($this->addPageTerms === true){
+            $this->displayNewPageShowHeader = false;
+            $this->AddPage();
+            $this->terms();
+        }
 
         return $this->Output($destination, $name);
     }
 
     public function Header()
     {
+        if ($this->displayNewPageShowHeader === true) {
         if (isset($this->logo) and !empty($this->logo)) {
             $this->Image(
                 $this->logo,
@@ -461,7 +509,7 @@ class InvoicePrinter extends FPDF
                      - max(
                          $this->GetStringWidth(mb_strtoupper((string)$this->reference, self::ICONV_CHARSET_INPUT)),
                          $this->GetStringWidth(mb_strtoupper((string)$this->date, self::ICONV_CHARSET_INPUT))
-                     );
+                     ) - 10;
 
         //Number
         if (!empty($this->reference)) {
@@ -526,6 +574,7 @@ class InvoicePrinter extends FPDF
                 $this->SetFont($this->font, '', 9);
                 $this->Cell(0, $lineheight, $customHeader['content'], 0, 1, 'R');
             }
+        }
         }
 
         //First page
@@ -929,6 +978,40 @@ class InvoicePrinter extends FPDF
                 $this->MultiCell(0, 4, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, $text[1]), 0, 'L', 0);
                 $this->Ln(4);
             }
+        }
+    }
+
+    public function quoteSignature(){
+		$txt = file_get_contents($this->addPageQuoteSignaturePageText1);
+		$this->SetY(50);
+		$this->SetFont($this->font, '', 10);
+		$this->SetTextColor(50, 50, 50);
+		$this->MultiCell(180,5,$txt);
+	}
+
+    public function terms(){
+		if($this->addPageTermsColumns == 1){
+            $txt = file_get_contents($this->addPageTermsText1);
+            $this->SetY(10);
+            $this->SetFont($this->font, 'b', 6);
+            $this->SetTextColor(50, 50, 50);
+            $this->MultiCell(180,2.2,$txt);
+        } elseif($this->addPageTermsColumns == 2){
+            $txt = file_get_contents($this->addPageTermsText1);
+            $this->SetY(10);
+            $this->SetFont($this->font, 'b', 6);
+            $this->SetTextColor(50, 50, 50);
+            $this->MultiCell(90,2.2,$txt);
+            // define column 2
+            $x = 6+2*50;
+            $this->SetLeftMargin($x);
+            $this->SetX($x);
+            $this->SetY(10);
+            $txt = file_get_contents($this->addPageTermsText2);
+            $this->SetFont($this->font, 'b', 6);
+            $this->SetTextColor(50, 50, 50);
+            $this->MultiCell(90,2.3,$txt);
+            $this->SetLeftMargin(15);
         }
     }
 

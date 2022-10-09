@@ -102,6 +102,14 @@ use Konekt\PdfInvoice\InvoicePrinter;
   $invoice->addParagraph("No item will be replaced or refunded if you don't have the invoice with you.");
   
   $invoice->setFooternote("My Company Name Here");
+
+  $invoice->addPageQuoteSignature(true);
+  $invoice->setAddPageQuoteSignaturePageText1("inc/text/quote-signature/en-signature.txt");
+
+  $invoice->setAddTermsPage(true);    // add general terms page
+  $invoice->setAddTermsPageColumns(2);    // define columns
+  $invoice->setAddTermsPageText1("inc/text/quote-signature/example-leftpart.txt");
+  $invoice->setAddTermsPageText2("inc/text/quote-signature/example-rightpart.txt");
   
   $invoice->render('example1.pdf','I'); 
   /* I => Display on browser, D => Force Download, F => local path save, S => return document as string */
@@ -355,6 +363,34 @@ $invoice->setFooternote($note);
 ```
 
 note {string} A string with the information you want to display in the footer.
+
+### Add Page Quote Signature
+
+Option to add a signature page for Quotes or any other text.
+
+```php
+$invoice->addPageQuoteSignature(true);
+$invoice->setAddPageQuoteSignaturePageText1("inc/text/quote-signature/en-signature.txt");
+```
+
+### Add General terms
+
+Option to add General Terms page in one or two columns.
+
+One Column Example
+```php
+$invoice->setAddTermsPage(true);    // add general terms page
+$invoice->setAddTermsPageColumns(1);    // define columns
+$invoice->setAddTermsPageText1("inc/text/quote-signature/example-textonecolumn.txt");
+```
+
+Two Column Example
+```php
+$invoice->setAddTermsPage(true);    // add general terms page
+$invoice->setAddTermsPageColumns(2);    // define columns
+$invoice->setAddTermsPageText1("inc/text/quote-signature/example-leftpart.txt");
+$invoice->setAddTermsPageText2("inc/text/quote-signature/example-rightpart.txt");
+```
 
 ### Rendering The Invoice
 
