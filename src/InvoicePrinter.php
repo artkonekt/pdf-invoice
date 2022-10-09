@@ -280,12 +280,12 @@ class InvoicePrinter extends FPDF
     {
         $this->totalsAlignment = $alignment;
     }
-    
+
     public function setAddPageQuoteSignature($data)
     {
         $this->addPageQuoteSignature = $data;
     }
-    
+
     public function setAddPageQuoteSignaturePageText1($data)
     {
         $this->addPageQuoteSignaturePageText1 = $data;
@@ -461,10 +461,10 @@ class InvoicePrinter extends FPDF
         $this->AddPage();
         $this->Body();
         $this->AliasNbPages();
-		if($this->addPageQuoteSignature === true){
+        if ($this->addPageQuoteSignature === true){
             $this->displayNewPageShowHeader = true;
             $this->AddPage();
-			$this->quoteSignature();
+            $this->quoteSignature();
 		}
         if($this->addPageTerms === true){
             $this->displayNewPageShowHeader = false;
