@@ -478,103 +478,103 @@ class InvoicePrinter extends FPDF
     public function Header()
     {
         if ($this->displayNewPageShowHeader === true) {
-        if (isset($this->logo) and !empty($this->logo)) {
-            $this->Image(
-                $this->logo,
-                $this->margins['l'],
-                $this->margins['t'],
-                $this->dimensions[0],
-                $this->dimensions[1]
-            );
-        }
+            if (isset($this->logo) and !empty($this->logo)) {
+                $this->Image(
+                    $this->logo,
+                    $this->margins['l'],
+                    $this->margins['t'],
+                    $this->dimensions[0],
+                    $this->dimensions[1]
+                );
+            }
 
-        //Title
-        $this->SetTextColor(0, 0, 0);
-        $this->SetFont($this->font, 'B', 20);
-        if (isset($this->title) and !empty($this->title)) {
-            $this->Cell(0, 5, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->title, self::ICONV_CHARSET_INPUT)), 0, 1, 'R');
-        }
-        $this->SetFont($this->font, '', 9);
-        $this->Ln(5);
-
-        $lineheight = 5;
-        //Calculate position of strings
-        $this->SetFont($this->font, 'B', 9);
-        $positionX = $this->document['w'] - $this->margins['l'] - $this->margins['r']
-                     - max(
-                         $this->GetStringWidth(mb_strtoupper($this->lang['number'], self::ICONV_CHARSET_INPUT)),
-                         $this->GetStringWidth(mb_strtoupper($this->lang['date'], self::ICONV_CHARSET_INPUT)),
-                         $this->GetStringWidth(mb_strtoupper($this->lang['due'], self::ICONV_CHARSET_INPUT))
-                     )
-                     - max(
-                         $this->GetStringWidth(mb_strtoupper((string)$this->reference, self::ICONV_CHARSET_INPUT)),
-                         $this->GetStringWidth(mb_strtoupper((string)$this->date, self::ICONV_CHARSET_INPUT))
-                     ) - 10;
-
-        //Number
-        if (!empty($this->reference)) {
-            $this->Cell($positionX, $lineheight);
-            $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->Cell(
-                32,
-                $lineheight,
-                iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['number'], self::ICONV_CHARSET_INPUT) . ':'),
-                0,
-                0,
-                'L'
-            );
-            $this->SetTextColor(50, 50, 50);
+            //Title
+            $this->SetTextColor(0, 0, 0);
+            $this->SetFont($this->font, 'B', 20);
+            if (isset($this->title) and !empty($this->title)) {
+                $this->Cell(0, 5, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->title, self::ICONV_CHARSET_INPUT)), 0, 1, 'R');
+            }
             $this->SetFont($this->font, '', 9);
-            $this->Cell(0, $lineheight, $this->reference, 0, 1, 'R');
-        }
-        //Date
-        $this->Cell($positionX, $lineheight);
-        $this->SetFont($this->font, 'B', 9);
-        $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-        $this->Cell(32, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['date'], self::ICONV_CHARSET_INPUT)) . ':', 0, 0, 'L');
-        $this->SetTextColor(50, 50, 50);
-        $this->SetFont($this->font, '', 9);
-        $this->Cell(0, $lineheight, $this->date, 0, 1, 'R');
+            $this->Ln(5);
 
-        //Time
-        if (!empty($this->time)) {
+            $lineheight = 5;
+            //Calculate position of strings
+            $this->SetFont($this->font, 'B', 9);
+            $positionX = $this->document['w'] - $this->margins['l'] - $this->margins['r']
+                        - max(
+                            $this->GetStringWidth(mb_strtoupper($this->lang['number'], self::ICONV_CHARSET_INPUT)),
+                            $this->GetStringWidth(mb_strtoupper($this->lang['date'], self::ICONV_CHARSET_INPUT)),
+                            $this->GetStringWidth(mb_strtoupper($this->lang['due'], self::ICONV_CHARSET_INPUT))
+                        )
+                        - max(
+                            $this->GetStringWidth(mb_strtoupper((string)$this->reference, self::ICONV_CHARSET_INPUT)),
+                            $this->GetStringWidth(mb_strtoupper((string)$this->date, self::ICONV_CHARSET_INPUT))
+                        ) - 10;
+
+            //Number
+            if (!empty($this->reference)) {
+                $this->Cell($positionX, $lineheight);
+                $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
+                $this->Cell(
+                    32,
+                    $lineheight,
+                    iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['number'], self::ICONV_CHARSET_INPUT) . ':'),
+                    0,
+                    0,
+                    'L'
+                );
+                $this->SetTextColor(50, 50, 50);
+                $this->SetFont($this->font, '', 9);
+                $this->Cell(0, $lineheight, $this->reference, 0, 1, 'R');
+            }
+            //Date
             $this->Cell($positionX, $lineheight);
             $this->SetFont($this->font, 'B', 9);
             $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->Cell(
-                32,
-                $lineheight,
-                iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['time'], self::ICONV_CHARSET_INPUT)) . ':',
-                0,
-                0,
-                'L'
-            );
+            $this->Cell(32, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['date'], self::ICONV_CHARSET_INPUT)) . ':', 0, 0, 'L');
             $this->SetTextColor(50, 50, 50);
             $this->SetFont($this->font, '', 9);
-            $this->Cell(0, $lineheight, $this->time, 0, 1, 'R');
-        }
-        //Due date
-        if (!empty($this->due)) {
-            $this->Cell($positionX, $lineheight);
-            $this->SetFont($this->font, 'B', 9);
-            $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-            $this->Cell(32, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['due'], self::ICONV_CHARSET_INPUT)) . ':', 0, 0, 'L');
-            $this->SetTextColor(50, 50, 50);
-            $this->SetFont($this->font, '', 9);
-            $this->Cell(0, $lineheight, $this->due, 0, 1, 'R');
-        }
-        //Custom Headers
-        if (count($this->customHeaders) > 0) {
-            foreach ($this->customHeaders as $customHeader) {
+            $this->Cell(0, $lineheight, $this->date, 0, 1, 'R');
+
+            //Time
+            if (!empty($this->time)) {
                 $this->Cell($positionX, $lineheight);
                 $this->SetFont($this->font, 'B', 9);
                 $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
-                $this->Cell(32, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($customHeader['title'], self::ICONV_CHARSET_INPUT)) . ':', 0, 0, 'L');
+                $this->Cell(
+                    32,
+                    $lineheight,
+                    iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['time'], self::ICONV_CHARSET_INPUT)) . ':',
+                    0,
+                    0,
+                    'L'
+                );
                 $this->SetTextColor(50, 50, 50);
                 $this->SetFont($this->font, '', 9);
-                $this->Cell(0, $lineheight, $customHeader['content'], 0, 1, 'R');
+                $this->Cell(0, $lineheight, $this->time, 0, 1, 'R');
             }
-        }
+            //Due date
+            if (!empty($this->due)) {
+                $this->Cell($positionX, $lineheight);
+                $this->SetFont($this->font, 'B', 9);
+                $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
+                $this->Cell(32, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($this->lang['due'], self::ICONV_CHARSET_INPUT)) . ':', 0, 0, 'L');
+                $this->SetTextColor(50, 50, 50);
+                $this->SetFont($this->font, '', 9);
+                $this->Cell(0, $lineheight, $this->due, 0, 1, 'R');
+            }
+            //Custom Headers
+            if (count($this->customHeaders) > 0) {
+                foreach ($this->customHeaders as $customHeader) {
+                    $this->Cell($positionX, $lineheight);
+                    $this->SetFont($this->font, 'B', 9);
+                    $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
+                    $this->Cell(32, $lineheight, iconv(self::ICONV_CHARSET_INPUT, self::ICONV_CHARSET_OUTPUT_A, mb_strtoupper($customHeader['title'], self::ICONV_CHARSET_INPUT)) . ':', 0, 0, 'L');
+                    $this->SetTextColor(50, 50, 50);
+                    $this->SetFont($this->font, '', 9);
+                    $this->Cell(0, $lineheight, $customHeader['content'], 0, 1, 'R');
+                }
+            }
         }
 
         //First page
@@ -981,27 +981,29 @@ class InvoicePrinter extends FPDF
         }
     }
 
-    public function quoteSignature(){
-		$txt = file_get_contents($this->addPageQuoteSignaturePageText1);
-		$this->SetY(50);
-		$this->SetFont($this->font, '', 10);
-		$this->SetTextColor(50, 50, 50);
-		$this->MultiCell(180,5,$txt);
+    public function quoteSignature()
+    {
+        $txt = file_get_contents($this->addPageQuoteSignaturePageText1);
+        $this->SetY(50);
+        $this->SetFont($this->font, '', 10);
+        $this->SetTextColor(50, 50, 50);
+        $this->MultiCell(180,5,$txt);
 	}
 
-    public function terms(){
-		if($this->addPageTermsColumns == 1){
+    public function terms()
+    {
+		if ($this->addPageTermsColumns == 1) {
             $txt = file_get_contents($this->addPageTermsText1);
             $this->SetY(10);
             $this->SetFont($this->font, 'b', 6);
             $this->SetTextColor(50, 50, 50);
-            $this->MultiCell(180,2.2,$txt);
-        } elseif($this->addPageTermsColumns == 2){
+            $this->MultiCell(180, 2.2, $txt);
+        } elseif ($this->addPageTermsColumns == 2) {
             $txt = file_get_contents($this->addPageTermsText1);
             $this->SetY(10);
             $this->SetFont($this->font, 'b', 6);
             $this->SetTextColor(50, 50, 50);
-            $this->MultiCell(90,2.2,$txt);
+            $this->MultiCell(90, 2.2, $txt);
             // define column 2
             $x = 6+2*50;
             $this->SetLeftMargin($x);
@@ -1010,7 +1012,7 @@ class InvoicePrinter extends FPDF
             $txt = file_get_contents($this->addPageTermsText2);
             $this->SetFont($this->font, 'b', 6);
             $this->SetTextColor(50, 50, 50);
-            $this->MultiCell(90,2.3,$txt);
+            $this->MultiCell(90, 2.3, $txt);
             $this->SetLeftMargin(15);
         }
     }
