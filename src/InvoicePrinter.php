@@ -466,7 +466,7 @@ class InvoicePrinter extends FPDF
             $this->AddPage();
             $this->quoteSignature();
 		}
-        if($this->addPageTerms === true) {
+        if ($this->addPageTerms === true) {
             $this->displayNewPageShowHeader = false;
             $this->AddPage();
             $this->terms();
@@ -988,7 +988,7 @@ class InvoicePrinter extends FPDF
         $this->SetFont($this->font, '', 10);
         $this->SetTextColor(50, 50, 50);
         $this->MultiCell(180, 5, $txt);
-	}
+    }
 
     public function terms()
     {
