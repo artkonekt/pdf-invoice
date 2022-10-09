@@ -465,7 +465,7 @@ class InvoicePrinter extends FPDF
             $this->displayNewPageShowHeader = true;
             $this->AddPage();
             $this->quoteSignature();
-		}
+        }
         if ($this->addPageTerms === true) {
             $this->displayNewPageShowHeader = false;
             $this->AddPage();
