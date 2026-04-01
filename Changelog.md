@@ -1,7 +1,7 @@
 # Changelog
 
-## Unreleased
-##### 2026-XX-YY
+## 1.15.0
+##### 2026-04-01
 
 - Added PHP 8.4 support
 - Added PHP 8.5 support
