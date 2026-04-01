@@ -5,6 +5,7 @@
 
 - Added PHP 8.4 support
 - Added PHP 8.5 support
+- Dropped PHP 7 support
 
 ## 1.14.0
 ##### 2023-11-28
